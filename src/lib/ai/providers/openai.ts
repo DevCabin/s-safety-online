@@ -15,7 +15,7 @@ export class OpenAIProvider implements AIProvider {
   constructor() {
     this.apiKey = process.env.OPENAI_API_KEY || null;
 
-    if (this.apiKey) {
+    if (this.apiKey && this.apiKey.length > 0) {
       this.client = new OpenAI({
         apiKey: this.apiKey,
       });

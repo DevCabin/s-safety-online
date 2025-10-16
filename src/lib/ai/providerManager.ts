@@ -26,7 +26,7 @@ export class ProviderManager {
       case 'openai':
         // Use provided API key or environment variable
         const apiKey = config.openai?.apiKey || process.env.OPENAI_API_KEY;
-        if (apiKey) {
+        if (apiKey && apiKey.length > 0) {
           return new OpenAIProvider();
         }
         console.warn('OpenAI API key not configured - provider will not be available');
@@ -128,7 +128,7 @@ export const DEFAULT_CONFIGS = {
   openai: {
     type: 'openai' as ProviderType,
     openai: {
-      apiKey: process.env.OPENAI_API_KEY
+      apiKey: process.env.OPENAI_API_KEY || ''
     }
   },
   lmstudio: {
@@ -138,6 +138,6 @@ export const DEFAULT_CONFIGS = {
       model: process.env.LM_STUDIO_MODEL || 'meta-llama-3-8b-instruct',
       temperature: 0.3,
       maxTokens: 1000
-    }
+    } as LMStudioConfig
   }
 };
