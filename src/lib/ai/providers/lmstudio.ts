@@ -117,7 +117,7 @@ export class LMStudioProvider implements AIProvider {
       };
 
       // Convert to our internal format
-      const result = this.convertToAnalysisResult(analysis, emailData);
+      const result = this.convertToAnalysisResult(analysis);
 
       return {
         success: true,
@@ -152,7 +152,14 @@ export class LMStudioProvider implements AIProvider {
     return content;
   }
 
-  private convertToAnalysisResult(analysis: any, originalEmail: EmailData): AnalysisResult {
+  private convertToAnalysisResult(analysis: {
+    verdict: string;
+    confidence: number;
+    explanation: string;
+    riskFactors: string[];
+    isScam: boolean;
+    actions: Array<{ description: string; channelSpecific?: string }>;
+  }): AnalysisResult {
     const verdict = analysis.verdict || 'SAFE';
     const config = getVerdictConfig(verdict);
 
