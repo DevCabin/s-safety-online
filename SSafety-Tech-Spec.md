@@ -109,10 +109,12 @@ Basic web application accepting email text via paste input, analyzing for scam p
 ✅ 4-level verdict system with actions
 ✅ Basic accessibility features
 ✅ Request limiting for freemium model
+✅ **User authentication** (username/password or Google OAuth)
+✅ **Trusted contacts system** (family member details for inconclusive results)
+✅ **Inconclusive result handling** (suggest contacting trusted contacts)
 ❌ File uploads or OCR
 ❌ Voice input or email forwarding
-❌ User accounts or lifeline systems
-❌ Payment integration
+❌ Payment integration (freemium limits only)
 
 ### V1 Implementation Steps:
 1. Set up OpenAI integration and environment variables

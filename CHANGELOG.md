@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2025-10-15
+## [0.1.2] - 2025-10-15
 ### Added
 - **V1 Basic Technical Specification** - Added comprehensive technical documentation for Version 1 implementation in `SSafety-Tech-Spec.md`
 - **Modular AI Analysis System** - Complete AI integration framework in `src/lib/ai/`:
