@@ -83,7 +83,52 @@ _As previously outlined; now includes lifeline/Dial a Nephew as core features._
 
 ---
 
-## 1. System Overview
+## V1 BASIC VERSION TECHNICAL SPECIFICATION
+**Simple Text-Paste Implementation for Version One**
+
+### V1 Overview:
+Basic web application accepting email text via paste input, analyzing for scam patterns using AI, and displaying color-coded safety verdicts with plain-language recommendations.
+
+### V1 Technical Stack:
+- **Frontend**: Next.js 14, TypeScript, Chakra UI (already installed)
+- **AI Service**: OpenAI GPT-4 (modular for easy provider switching)
+- **Deployment**: Vercel serverless functions
+- **Input Method**: Simple textarea for email content (headers, subject, body)
+- **Output**: Color-coded verdicts (Red/Orange/Yellow/Green) with safety actions
+
+### V1 Key Features:
+- **Email Parsing**: Extract sender, subject, body from pasted text
+- **Scam Detection**: Focus on sender authenticity, urgent language, suspicious links
+- **Modular AI**: Designed for easy switching between OpenAI/Gemini/Anthropic
+- **Senior-Friendly UI**: Large fonts, high contrast, simple interactions
+- **Freemium Foundation**: 5-10 free analyses with upgrade prompts
+
+### V1 Development Scope:
+✅ Text paste input only
+✅ OpenAI integration with crafted prompts
+✅ 4-level verdict system with actions
+✅ Basic accessibility features
+✅ Request limiting for freemium model
+❌ File uploads or OCR
+❌ Voice input or email forwarding
+❌ User accounts or lifeline systems
+❌ Payment integration
+
+### V1 Implementation Steps:
+1. Set up OpenAI integration and environment variables
+2. Create modular AI analysis system
+3. Build text input interface
+4. Implement analysis API endpoint
+5. Create result display with color coding
+6. Add request tracking and limits
+7. Test with sample emails and iterate
+
+---
+
+## FULL TECHNICAL SPECIFICATION (FUTURE VERSIONS)
+**Complete Multi-Channel Implementation (Post-V1)**
+
+### 1. System Overview
 
 Multi-channel submission web app powered by Next.js, hosted on Vercel, leveraging AI for fast, plain-language safety verdicts. Freemium model, highly accessible, integrates human escalation.
 
