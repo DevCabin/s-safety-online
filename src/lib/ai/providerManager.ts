@@ -29,14 +29,14 @@ export class ProviderManager {
         if (apiKey) {
           return new OpenAIProvider();
         }
-        console.warn('OpenAI API key not provided');
+        console.warn('OpenAI API key not configured - provider will not be available');
         return null;
 
       case 'lmstudio':
         if (config.lmstudio) {
           return new LMStudioProvider(config.lmstudio);
         }
-        console.warn('LM Studio configuration not provided');
+        console.warn('LM Studio configuration not provided - provider will not be available');
         return null;
 
       default:
