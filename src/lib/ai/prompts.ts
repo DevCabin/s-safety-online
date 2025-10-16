@@ -6,6 +6,9 @@ export const SCAM_DETECTION_PROMPT = `You are an expert cybersecurity analyst sp
 EMAIL CONTENT:
 {emailContent}
 
+TRUSTED CONTACTS (for RISKY results):
+{trustedContacts}
+
 ANALYSIS INSTRUCTIONS:
 1. Extract key email components (sender, subject, main message)
 2. Identify potential scam indicators:
@@ -21,6 +24,8 @@ ANALYSIS INSTRUCTIONS:
    - SUSPICIOUS: Several concerning elements, caution advised
    - RISKY: Some unusual elements, verify before proceeding
    - SAFE: No apparent risks, normal communication
+
+4. For RISKY verdicts, include trusted contact suggestions in the explanation
 
 RESPONSE FORMAT (JSON only):
 {
@@ -41,7 +46,8 @@ IMPORTANT:
 - Use simple, clear language appropriate for seniors
 - Be specific about risks without causing unnecessary alarm
 - Focus on actionable safety steps
-- If suspicious but not clearly dangerous, recommend verification steps`;
+- If suspicious but not clearly dangerous, recommend verification steps
+- For RISKY results, suggest contacting trusted family members by name`;
 
 export const VERDICT_CONFIGURATIONS = {
   DANGER: {

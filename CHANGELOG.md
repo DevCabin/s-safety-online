@@ -7,27 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.2] - 2025-10-15
+## [0.1.3] - 2025-10-15
 ### Added
-- **V1 Basic Technical Specification** - Added comprehensive technical documentation for Version 1 implementation in `SSafety-Tech-Spec.md`
-- **Modular AI Analysis System** - Complete AI integration framework in `src/lib/ai/`:
-  - `types.ts` - TypeScript interfaces for type safety and modularity
-  - `prompts.ts` - Carefully crafted scam detection prompts optimized for seniors
-  - `providers/openai.ts` - OpenAI GPT-4 provider implementation with easy switching capability
-  - `analyzer.ts` - Main analysis coordinator with email parsing utilities
-- **OpenAI SDK Integration** - Added OpenAI package for AI-powered email analysis
-- **Competitive Analysis Document** - Added `f_secure_gap.md` with detailed competitive analysis vs F-Secure
+- **Multi-Provider AI System** - Flexible architecture supporting both OpenAI and LM Studio:
+  - `providers/lmstudio.ts` - LM Studio provider for local models (Meta Llama 3, etc.)
+  - `providerManager.ts` - Provider switching and configuration management
+  - Cloudflare tunneling support for LM Studio deployment
+- **Enhanced Authentication System** - Complete user management with Supabase:
+  - `lib/auth.ts` - Authentication and trusted contacts management
+  - User registration and login functionality
+  - Trusted contacts storage and retrieval
+- **Supabase Integration** - Database setup for user data and trusted contacts
+- **Environment Configuration** - `.env.example` with complete setup instructions for both AI providers
 
-### Changed
-- **Technical Specifications** - Updated `SSafety-Tech-Spec.md` with clear V1 scope and future roadmap
-- **Package Dependencies** - Updated `package.json` with OpenAI SDK
+### Enhanced Features
+- **Dual AI Provider Support**: Switch between OpenAI GPT-4 and LM Studio local models
+- **Cloudflare Integration**: Use LM Studio with Meta Llama 3 over secure tunnels
+- **Trusted Contacts Integration**: AI prompts now include family member suggestions for RISKY results
+- **Smart Provider Selection**: Auto-detects and prioritizes available AI providers
 
 ### Technical Architecture
-- **Modular Design**: AI providers can be easily swapped (OpenAI → Gemini → Anthropic)
-- **Senior-Focused Prompts**: AI prompts specifically crafted for elderly user safety and clear communication
-- **Email Parsing**: Intelligent extraction of sender, subject, and body from pasted text
-- **Scam Detection**: Focus on sender authenticity mismatches and common scam patterns
-- **Verdict System**: 4-level color-coded system (Red/Orange/Yellow/Green) with specific actions
+- **Provider Manager**: Coordinates switching between OpenAI and LM Studio
+- **Modular Design**: Easy to add new AI providers (Anthropic, local models, etc.)
+- **Cost Optimization**: Use local models for development, OpenAI for production
+- **Privacy Enhancement**: Local models keep analysis on your infrastructure
 
 ## Project Status
 **Current**: Pre-build stable point with complete AI analysis framework ready for frontend integration

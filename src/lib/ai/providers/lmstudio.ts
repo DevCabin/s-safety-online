@@ -1,4 +1,3 @@
-import OpenAI from 'openai';
 import {
   AIProvider,
   EmailData,
@@ -8,26 +7,39 @@ import {
 } from '../types';
 import { SCAM_DETECTION_PROMPT, getVerdictConfig } from '../prompts';
 
-export class OpenAIProvider implements AIProvider {
-  private client: OpenAI | null = null;
-  private apiKey: string | null = null;
+export interface LMStudioConfig {
+  baseUrl: string; // e.g., "https://your-tunnel.cloudflare.com" or "http://localhost:1234"
+  model: string;  // e.g., "meta-llama-3-8b-instruct"
+  temperature?: number;
+  maxTokens?: number;
+}
 
-  constructor() {
-    this.apiKey = process.env.OPENAI_API_KEY || null;
+export class LMStudioProvider implements AIProvider {
+  private config: LMStudioConfig;
+  private isConfiguredFlag: boolean;
 
-    if (this.apiKey) {
-      this.client = new OpenAI({
-        apiKey: this.apiKey,
-      });
-    }
+  constructor(config: LMStudioConfig) {
+    this.config = {
+      temperature: 0.3,
+      maxTokens: 1000,
+      ...config
+    };
+
+    // Check if we can reach the LM Studio server
+    this.isConfiguredFlag = this.validateConfiguration();
   }
 
   getProviderName(): string {
-    return 'OpenAI GPT-4';
+    return `LM Studio (${this.config.model})`;
   }
 
   isConfigured(): boolean {
-    return !!(this.client && this.apiKey);
+    return this.isConfiguredFlag;
+  }
+
+  private validateConfiguration(): boolean {
+    // Basic validation - in production you might want to test the connection
+    return !!(this.config.baseUrl && this.config.model);
   }
 
   async analyzeEmail(emailData: EmailData, trustedContacts?: string[]): Promise<AIAnalysisResponse> {
@@ -36,7 +48,7 @@ export class OpenAIProvider implements AIProvider {
     if (!this.isConfigured()) {
       return {
         success: false,
-        error: 'OpenAI API key not configured'
+        error: 'LM Studio provider not properly configured'
       };
     }
 
@@ -53,28 +65,44 @@ export class OpenAIProvider implements AIProvider {
       let prompt = SCAM_DETECTION_PROMPT.replace('{emailContent}', emailContent);
       prompt = prompt.replace('{trustedContacts}', contactsText);
 
-      const response = await this.client!.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a cybersecurity expert focused on protecting seniors from scams. Always respond with valid JSON only.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.3, // Lower temperature for consistent analysis
-        max_tokens: 1000,
+      // Make request to LM Studio server
+      const response = await fetch(`${this.config.baseUrl}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.config.model,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a cybersecurity expert focused on protecting seniors from scams. Always respond with valid JSON only.'
+            },
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          temperature: this.config.temperature,
+          max_tokens: this.config.maxTokens,
+        }),
       });
 
-      const content = response.choices[0]?.message?.content;
+      if (!response.ok) {
+        return {
+          success: false,
+          error: `LM Studio API error: ${response.status} ${response.statusText}`,
+          processingTime: Date.now() - startTime
+        };
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content;
 
       if (!content) {
         return {
           success: false,
-          error: 'No response from OpenAI API'
+          error: 'No response content from LM Studio API'
         };
       }
 
@@ -91,7 +119,7 @@ export class OpenAIProvider implements AIProvider {
       };
 
     } catch (error) {
-      console.error('OpenAI analysis error:', error);
+      console.error('LM Studio analysis error:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -136,5 +164,11 @@ export class OpenAIProvider implements AIProvider {
       riskFactors: analysis.riskFactors || [],
       isScam: analysis.isScam || false
     };
+  }
+
+  // Update configuration (useful for dynamic provider switching)
+  updateConfig(newConfig: Partial<LMStudioConfig>) {
+    this.config = { ...this.config, ...newConfig };
+    this.isConfiguredFlag = this.validateConfiguration();
   }
 }

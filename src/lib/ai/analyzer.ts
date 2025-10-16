@@ -1,16 +1,25 @@
 import { EmailData, AIAnalysisResponse, AnalysisResult, AIProvider } from './types';
-import { OpenAIProvider } from './providers/openai';
+import { ProviderManager, ProviderConfig, DEFAULT_CONFIGS } from './providerManager';
 
 // Main analyzer class that coordinates AI analysis
 export class EmailAnalyzer {
-  private provider: AIProvider;
+  private providerManager: ProviderManager;
 
-  constructor(provider?: AIProvider) {
-    // Default to OpenAI provider, but allow injection for testing/modularity
-    this.provider = provider || new OpenAIProvider();
+  constructor(providerConfig?: ProviderConfig) {
+    // Default to OpenAI if API key is available, otherwise LM Studio
+    const config = providerConfig || this.getDefaultConfig();
+    this.providerManager = new ProviderManager(config);
   }
 
-  async analyzeEmail(emailData: EmailData): Promise<AIAnalysisResponse> {
+  private getDefaultConfig(): ProviderConfig {
+    // Use OpenAI if API key is available, otherwise use LM Studio
+    if (process.env.OPENAI_API_KEY) {
+      return DEFAULT_CONFIGS.openai;
+    }
+    return DEFAULT_CONFIGS.lmstudio;
+  }
+
+  async analyzeEmail(emailData: EmailData, trustedContacts?: string[]): Promise<AIAnalysisResponse> {
     // Basic validation
     if (!emailData.rawText || emailData.rawText.trim().length === 0) {
       return {
@@ -28,8 +37,17 @@ export class EmailAnalyzer {
     }
 
     try {
-      // Use the configured AI provider
-      const response = await this.provider.analyzeEmail(emailData);
+      // Get the current provider and use it for analysis
+      const provider = this.providerManager.getProvider();
+      if (!provider) {
+        return {
+          success: false,
+          error: 'No AI provider configured'
+        };
+      }
+
+      // Use the configured AI provider with trusted contacts
+      const response = await provider.analyzeEmail(emailData, trustedContacts);
 
       // Log analysis for monitoring (in production, use proper logging service)
       console.log(`Analysis completed: ${response.success ? 'SUCCESS' : 'FAILED'}`);
@@ -51,14 +69,19 @@ export class EmailAnalyzer {
   // Get information about the current AI provider
   getProviderInfo() {
     return {
-      name: this.provider.getProviderName(),
-      configured: this.provider.isConfigured()
+      name: this.providerManager.getProviderName(),
+      configured: this.providerManager.isConfigured()
     };
   }
 
   // Method to switch providers (for future extensibility)
-  setProvider(provider: AIProvider) {
-    this.provider = provider;
+  switchProvider(config: ProviderConfig): boolean {
+    return this.providerManager.switchProvider(config);
+  }
+
+  // Get the provider manager for advanced operations
+  getProviderManager(): ProviderManager {
+    return this.providerManager;
   }
 }
 

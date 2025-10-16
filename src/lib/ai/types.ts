@@ -36,7 +36,7 @@ export interface AIAnalysisResponse {
 
 // AI Provider interface for modularity
 export interface AIProvider {
-  analyzeEmail(emailData: EmailData): Promise<AIAnalysisResponse>;
+  analyzeEmail(emailData: EmailData, trustedContacts?: string[]): Promise<AIAnalysisResponse>;
   getProviderName(): string;
   isConfigured(): boolean;
 }
@@ -53,4 +53,28 @@ export interface VerdictConfig {
   requiresHumanHelp: boolean;
   requiresLifeline: boolean;
   priority: number;
+}
+
+// User and Authentication Types
+export interface User {
+  id: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TrustedContact {
+  id: string;
+  user_id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  relationship: string; // e.g., "daughter", "son", "spouse", "friend"
+  created_at: string;
+}
+
+export interface UserSession {
+  user: User;
+  access_token: string;
+  refresh_token: string;
 }
