@@ -21,7 +21,7 @@ export class AuthManager {
 
   async signUp(email: string, password: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const { data, error } = await this.supabase.auth.signUp({
+      const { error } = await this.supabase.auth.signUp({
         email,
         password,
       });

@@ -1,4 +1,4 @@
-import { EmailData, AIAnalysisResponse, AnalysisResult, AIProvider } from './types';
+import { EmailData, AIAnalysisResponse } from './types';
 import { ProviderManager, ProviderConfig, DEFAULT_CONFIGS } from './providerManager';
 
 // Main analyzer class that coordinates AI analysis

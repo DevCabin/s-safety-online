@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { trustedContactsManager, authManager } from '@/lib/auth';
-import { TrustedContact } from '@/lib/ai/types';
 
 // GET /api/trusted-contacts - Get user's trusted contacts
 export async function GET(request: NextRequest) {

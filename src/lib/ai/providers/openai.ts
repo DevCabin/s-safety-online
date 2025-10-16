@@ -79,7 +79,14 @@ export class OpenAIProvider implements AIProvider {
       }
 
       // Parse the JSON response
-      const analysis = JSON.parse(content);
+      const analysis = JSON.parse(content) as {
+        verdict: string;
+        confidence: number;
+        explanation: string;
+        riskFactors: string[];
+        isScam: boolean;
+        actions: Array<{ description: string; channelSpecific?: string }>;
+      };
 
       // Convert to our internal format
       const result = this.convertToAnalysisResult(analysis, emailData);
