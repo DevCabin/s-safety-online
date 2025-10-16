@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ChakraProvider value={defaultSystem}>
+        <ChakraProvider>
           {children}
         </ChakraProvider>
       </body>
